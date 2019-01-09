@@ -1,11 +1,18 @@
 import React, { Component } from "react";
 import Message from "./Message";
 import ChatInput from "./ChatInput";
+import { clearInterval } from "timers";
 
 export default class ChatWindow extends Component {
-  state = {
-    messages: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      messages: [],
+      subscriptionId: null,
+      scrollPosition: null
+    };
+    this.chatWindowRef = React.createRef();
+  }
 
   loadMessages = messages => this.setState({ messages });
 
@@ -16,15 +23,26 @@ export default class ChatWindow extends Component {
   };
 
   subscribeToMessages = () => {
-    setInterval(this.fetchMessages, 300);
+    const subscriptionId = setInterval(this.fetchMessages, 300);
+    this.setState({ subscriptionId });
   };
 
   componentDidMount() {
     this.fetchMessages().then(this.subscribeToMessages);
   }
 
-  getSnapshotBeforeUpdate() {
-    console.log("hi");
+  componentDidUpdate() {
+    if (this.state.scrollPosition) {
+      console.log("Not doing stuff");
+    } else {
+      const domChatWindow = this.chatWindowRef.current;
+      domChatWindow.scrollTop = domChatWindow.scrollHeight;
+    }
+  }
+
+  componentWillUnmount() {
+    window.clearInterval(this.state.subscriptionId);
+    this.setState({ subscriptionId: null });
   }
 
   render() {
@@ -50,10 +68,9 @@ export default class ChatWindow extends Component {
             overflow: "scroll",
             position: "relative"
           }}
+          ref={this.chatWindowRef}
         >
-          <div style={{ position: "absolute", bottom: 0 }}>
-            {messagesElements}
-          </div>
+          <div>{messagesElements}</div>
         </div>
         <div
           style={{
