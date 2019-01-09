@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Message from "./Message";
 import ChatInput from "./ChatInput";
-import { clearInterval } from "timers";
 
 export default class ChatWindow extends Component {
   constructor(props) {
@@ -41,7 +40,7 @@ export default class ChatWindow extends Component {
   }
 
   componentWillUnmount() {
-    window.clearInterval(this.state.subscriptionId);
+    clearInterval(this.state.subscriptionId);
     this.setState({ subscriptionId: null });
   }
 
