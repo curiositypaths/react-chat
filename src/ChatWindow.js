@@ -3,19 +3,17 @@ import Message from "./Message";
 import ChatInput from "./ChatInput";
 
 export default class ChatWindow extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      messages: [],
-      subscriptionId: null,
-      scrollPosition: null
-    };
-    this.chatWindowRef = React.createRef();
-  }
+  state = {
+    messages: [],
+    subscriptionId: null
+  };
+
+  chatWindowRef = React.createRef();
 
   loadMessages = messages => this.setState({ messages });
 
   fetchMessages = () => {
+    console.log("Requesting updated messages list");
     return fetch("http://localhost:3000/messages")
       .then(r => r.json())
       .then(this.loadMessages);
@@ -31,12 +29,8 @@ export default class ChatWindow extends Component {
   }
 
   componentDidUpdate() {
-    if (this.state.scrollPosition) {
-      console.log("Not doing stuff");
-    } else {
-      const domChatWindow = this.chatWindowRef.current;
-      domChatWindow.scrollTop = domChatWindow.scrollHeight;
-    }
+    const domChatWindow = this.chatWindowRef.current;
+    domChatWindow.scrollTop = domChatWindow.scrollHeight;
   }
 
   componentWillUnmount() {

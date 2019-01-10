@@ -10,12 +10,8 @@ const defaultState = {
 class ChatContainer extends Component {
   state = defaultState;
 
-  handleUserName = e => {
-    const {
-      target: { value: userName }
-    } = e;
+  handleUserName = ({ target: { value: userName } }) =>
     this.setState({ userName });
-  };
 
   handleJoin = () => {
     const {
@@ -27,20 +23,15 @@ class ChatContainer extends Component {
     }
   };
 
-  handleSignOut = () => {
-    this.setState(defaultState);
-  };
+  handleSignOut = () => this.setState(defaultState);
 
   render() {
     const {
       state: { userName, joined },
       handleUserName,
       handleJoin,
-      handleSignOut,
-      state
+      handleSignOut
     } = this;
-
-    console.log("In ChatContainer. State is :", state);
 
     return joined ? (
       <ChatWindow handleSignOut={handleSignOut} currentUser={userName} />
